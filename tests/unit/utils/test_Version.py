@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from dotenv import load_dotenv
 from osbot_utils.utils.Files import file_name, folder_name, parent_folder
 
 import cbr_deploy_custom_sites
@@ -10,6 +11,7 @@ class test_Version(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        load_dotenv()
         cls.version = Version()
 
     def test_path_code_root(self):
