@@ -1,8 +1,5 @@
-from pprint import pprint
-from unittest import TestCase
-
-from osbot_aws.deploy.Deploy_Lambda import Deploy_Lambda
-
+from unittest                                                import TestCase
+from osbot_aws.deploy.Deploy_Lambda                          import Deploy_Lambda
 from cbr_deploy_custom_sites.lambdas.dev.lambda__hello_world import run
 
 
