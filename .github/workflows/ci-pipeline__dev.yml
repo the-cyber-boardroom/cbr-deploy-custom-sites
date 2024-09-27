@@ -5,8 +5,12 @@ on:
       - dev
 
 env:
-  GIT__BRANCH         : 'dev'
-  PACKAGE_NAME        : 'cbr_deploy_custom_sites'
+  GIT__BRANCH           : 'dev'
+  PACKAGE_NAME          : 'cbr_deploy_custom_sites'
+  AWS_ACCESS_KEY_ID     : ${{ secrets.AWS_ACCESS_KEY_ID__470426667096     }}
+  AWS_SECRET_ACCESS_KEY : ${{ secrets.AWS_SECRET_ACCESS_KEY__470426667096 }}
+  AWS_ACCOUNT_ID        : "654654216424"
+  AWS_DEFAULT_REGION    : "eu-west-2"
 
 jobs:
 
