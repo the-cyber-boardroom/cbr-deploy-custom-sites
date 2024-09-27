@@ -1,12 +1,9 @@
 ---
-title: CBR XYZ
+title: CBR Deploy Custom Site
 ---
 
-# cbr-xyz
-Repo for XYZ (replace with name of project). 
-
-This is the template for the other projects and builds up the main CI/CD pipeline
-
+# cbr-deploy-custom-sites
+Repo with code to CBR Deploy Custom Site
 
 ## Repo details
 

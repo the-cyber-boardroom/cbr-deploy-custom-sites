@@ -6,7 +6,7 @@ on:
 
 env:
   GIT__BRANCH         : 'dev'
-  PACKAGE_NAME        : 'cbr_xyz'
+  PACKAGE_NAME        : 'cbr_deploy_custom_sites'
 
 jobs:
 

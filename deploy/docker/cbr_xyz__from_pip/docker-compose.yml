@@ -1,8 +1,8 @@
 services:
-  cbr_xyz:
+  cbr_deploy_custom_sites:
     build:
       context: ../../..
-      dockerfile: ./deploy/docker/cbr_xyz__from_pip/Dockerfile
+      dockerfile: ./deploy/docker/cbr_deploy_custom_sites__from_pip/Dockerfile
     platform: linux/amd64
-    container_name: cbr_xyz__from_pip
+    container_name: cbr_deploy_custom_sites__from_pip
     tty: true
