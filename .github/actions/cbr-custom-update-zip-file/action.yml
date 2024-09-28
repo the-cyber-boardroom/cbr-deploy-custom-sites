@@ -5,17 +5,23 @@ description: 'cbr-custom-update-zip-file'
 runs:
   using: 'composite'
   steps:
-    - uses: actions/checkout@v4
+    - name: Checkout action repository
+      uses: actions/checkout@v4
+      with:
+        repository: the-cyber-boardroom/cbr-deploy-custom-sites  # Check out the action repository
+        ref: dev
+        path: action_repo
 
     - name: install dependencies
       shell: bash
       run: |
         pip install osbot-aws
+
     - name: execute flow
       shell: bash
       run: |
         echo "Deploying lambda function"        
-        python ./cbr_deploy_custom_sites/flows/Flow__Update_CBR_Custom_Zip_File.py
+        python ./action_repo/cbr_deploy_custom_sites/flows/Flow__Update_CBR_Custom_Zip_File.py
       env:
         FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_BUCKET     : '654654216424--cbr-deploy--eu-west-1'
         FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME   : 'dev__cbr_custom_portuguese'
