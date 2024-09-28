@@ -27,6 +27,11 @@ jobs:
         run: |
           echo "Deploying lambda function"        
           poetry run python ./cbr_deploy_custom_sites/flows/Flow__Update_CBR_Custom_Zip_File.py
+        env:
+            FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_BUCKET     : '654654216424--cbr-deploy--eu-west-1'
+            FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME   : 'dev__cbr_custom_portuguese'
+            FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_KEY        : 'cbr-custom-websites/cbr_website_beta/dev__cbr_custom_portuguese.zip'
+            FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_SOURCE_CODE: 'https://github.com/the-cyber-boardroom/cbr-custom--portuguese/archive/refs/heads/dev.zip'
 
   run-unit-tests:
     runs-on: ubuntu-latest
