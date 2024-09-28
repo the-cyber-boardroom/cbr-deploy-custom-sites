@@ -1,6 +1,6 @@
 [tool.poetry]
 name        = "cbr_deploy_custom_sites"
-version     = "v0.1.3"
+version     = "v0.1.4"
 description = "CBR - Deploy Custom Sites"
 authors     = ["Dinis Cruz <dinis.cruz@owasp.org>"]
 license     = "MIT"
