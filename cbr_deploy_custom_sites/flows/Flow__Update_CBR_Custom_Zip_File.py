@@ -1,14 +1,11 @@
 from osbot_aws.apis.Lambda                          import Lambda
 from osbot_aws.aws.s3.S3                            import S3
-from osbot_utils.helpers.flows.Flow import Flow
-
-from osbot_utils.utils.Env import get_env
-
+from osbot_utils.helpers.flows.Flow                 import Flow
+from osbot_utils.utils.Env                          import get_env
 from osbot_utils.helpers.Zip_Bytes                  import Zip_Bytes
 from osbot_utils.utils.Http                         import GET_bytes
 from osbot_utils.utils.Misc                         import date_time_now
-from osbot_utils.utils.Zip import zip_bytes__replace_file, zip_bytes__file_contents, zip_bytes__files, \
-    zip_bytes__replace_files, zip_bytes__files_paths
+from osbot_utils.utils.Zip                          import zip_bytes__files, zip_bytes__replace_files
 from osbot_utils.decorators.methods.cache_on_self   import cache_on_self
 from osbot_utils.helpers.flows.decorators.flow      import flow
 from osbot_utils.helpers.flows.decorators.task      import task
@@ -18,9 +15,11 @@ ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_BUCKET      = 'FLOW__UPDATE_CBR_CU
 ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME    = 'FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME'
 ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_KEY         = 'FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_KEY'
 ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_SOURCE_CODE = 'FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_SOURCE_CODE'
+ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_BASE_PATH   = 'FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_BASE_PATH'
 
 
 class Flow__Update_CBR_Custom_Zip_File(Type_Safe):
+    gh_base_path            : str
     s3_file_bytes           : bytes
     lambda_name             : str
     s3_key                  : str
@@ -37,11 +36,13 @@ class Flow__Update_CBR_Custom_Zip_File(Type_Safe):
         if not self.s3_bucket               : self.s3_bucket                = get_env(ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_BUCKET      , '')
         if not self.lambda_name             : self.lambda_name              = get_env(ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME    , '')
         if not self.zip_file__gh_source_code: self.zip_file__gh_source_code = get_env(ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_SOURCE_CODE , '')
+        if not self.gh_base_path            : self.gh_base_path             = get_env(ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_BASE_PATH   , '')
 
         if not self.s3_key                  : raise ValueError("missing value for s3_key"                  )
         if not self.s3_bucket               : raise ValueError("missing value for s3_bucket"               )
         if not self.lambda_name             : raise ValueError("missing value for lambda_name"             )
         if not self.zip_file__gh_source_code: raise ValueError("missing value for zip_file__gh_source_code")
+        if not self.gh_base_path            : raise ValueError("missing value for gh_base_path")
 
     @task()
     def check_s3_access(self):
@@ -60,12 +61,12 @@ class Flow__Update_CBR_Custom_Zip_File(Type_Safe):
 
     @task()
     def extract_custom_files_from_zip(self, flow_data: dict):
-        base_path = 'cbr-custom--portuguese-dev/cbr_custom_portuguese/custom/'
         gh_zip_bytes = flow_data.get('gh_source_code__zip_bytes')
         with Zip_Bytes() as new_zip_file:
             for file_path, file_bytes in zip_bytes__files(gh_zip_bytes).items():
-                if file_path.startswith(base_path) and file_path.endswith('/') is False:
-                    new_file_path = file_path.replace(base_path, '')
+                if file_path.startswith(self.gh_base_path) and file_path.endswith('/') is False:
+                    print(f'copying file: {file_path}')
+                    new_file_path = file_path.replace(self.gh_base_path, '')
                     new_zip_file.add_file(new_file_path, file_bytes)
 
         flow_data['cbr_custom__new__zip_bytes'] = new_zip_file.zip_bytes

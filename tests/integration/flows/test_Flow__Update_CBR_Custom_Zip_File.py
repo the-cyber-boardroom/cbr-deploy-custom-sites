@@ -22,6 +22,7 @@ class test_Flow__Update_CBR_Custom_Zip_File(TestCase):
     def test_execute(self):
 
         with self.flow_update_zip as _:
+            _.gh_base_path             = 'cbr-custom--portuguese-dev/cbr_custom_portuguese/custom/'
             _.s3_key                   = 'cbr-custom-websites/cbr_website_beta/dev__cbr_custom_portuguese.zip'
             _.s3_bucket                = '654654216424--cbr-deploy--eu-west-1'
             _.lambda_name              = 'dev__cbr_custom_portuguese'
@@ -34,17 +35,21 @@ class test_Flow__Update_CBR_Custom_Zip_File(TestCase):
 
     def test_execute_from_env_vars(self):
 
-        # with self.flow as _:
-        #     _.execute()
-        #     assert _.flow_error.args[0] == "'load_vars_from_env' failed and task raise_on_error was set to True. Stopping flow execution"
-
         set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_BUCKET'      , '654654216424--cbr-deploy--eu-west-1'                                                      )
         set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME'    , 'dev__cbr_custom_portuguese'                                                               )
         set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_KEY'         , 'cbr-custom-websites/cbr_website_beta/dev__cbr_custom_portuguese.zip'                      )
         set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_SOURCE_CODE' ,  'https://github.com/the-cyber-boardroom/cbr-custom--portuguese/archive/refs/heads/dev.zip')
+        set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_BASE_PATH'   , 'cbr-custom--portuguese-dev/cbr_custom_portuguese/custom/'                                 )
         with self.flow as _:
             _.execute()
             assert _.flow_return_value == 'all done'
-        #assert self.flow
 
-        #assert self.flow.flow_return_value == 'all done'
+    def test_execute_from_env_vars__dg(self):
+        set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_BUCKET'      , '654654216424--cbr-deploy--eu-west-1'                                                                      )
+        set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME'    , 'dev__cbr__defensible_governance'                                                                          )
+        set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_KEY'         , 'cbr-custom-websites/cbr_website_beta/dev__cbr__defensible_governance.zip'                                 )
+        set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_SOURCE_CODE' , 'https://github.com/the-cyber-boardroom/cbr-custom--defensible-governance/archive/refs/heads/dev.zip'      )
+        set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_BASE_PATH'   , 'cbr-custom--defensible-governance-dev/cbr__defensible_governance/custom/'                                 )
+        with self.flow as _:
+            _.execute()
+            assert _.flow_return_value == 'all done'
