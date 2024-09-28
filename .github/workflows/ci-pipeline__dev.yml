@@ -19,6 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+#      - name: Git Update Current Branch
+#        uses: owasp-sbot/OSBot-GitHub-Actions/.github/actions/git__update_branch@dev
+
       - name: cbr-custom-update-zip-file
         uses: ./.github/actions/cbr-custom-update-zip-file
 

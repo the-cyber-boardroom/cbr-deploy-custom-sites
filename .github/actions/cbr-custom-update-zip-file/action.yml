@@ -5,13 +5,12 @@ description: 'cbr-custom-update-zip-file'
 runs:
   using: 'composite'
   steps:
-    # - name: Poetry - Install Dependencies
-    #   uses: owasp-sbot/OSBot-GitHub-Actions/.github/actions/poetry__install@dev
+    - uses: actions/checkout@v4
+
     - name: install dependencies
       shell: bash
       run: |
         pip install osbot-aws
-
     - name: execute flow
       shell: bash
       run: |
