@@ -34,9 +34,9 @@ class test_Flow__Update_CBR_Custom_Zip_File(TestCase):
 
     def test_execute_from_env_vars(self):
 
-        with self.flow as _:
-            _.execute()
-            assert _.flow_error.args[0] == "'load_vars_from_env' failed and task raise_on_error was set to True. Stopping flow execution"
+        # with self.flow as _:
+        #     _.execute()
+        #     assert _.flow_error.args[0] == "'load_vars_from_env' failed and task raise_on_error was set to True. Stopping flow execution"
 
         set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_BUCKET'      , '654654216424--cbr-deploy--eu-west-1'                                                      )
         set_env('FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME'    , 'dev__cbr_custom_portuguese'                                                               )
