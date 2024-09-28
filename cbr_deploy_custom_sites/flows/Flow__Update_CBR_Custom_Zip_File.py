@@ -1,5 +1,9 @@
 from osbot_aws.apis.Lambda                          import Lambda
 from osbot_aws.aws.s3.S3                            import S3
+from osbot_utils.helpers.flows.Flow import Flow
+
+from osbot_utils.utils.Env import get_env
+
 from osbot_utils.helpers.Zip_Bytes                  import Zip_Bytes
 from osbot_utils.utils.Http                         import GET_bytes
 from osbot_utils.utils.Misc                         import date_time_now
@@ -10,6 +14,10 @@ from osbot_utils.helpers.flows.decorators.flow      import flow
 from osbot_utils.helpers.flows.decorators.task      import task
 from osbot_utils.base_classes.Type_Safe             import Type_Safe
 
+ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_BUCKET      = 'FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_BUCKET'
+ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME    = 'FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME'
+ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_KEY         = 'FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_KEY'
+ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_SOURCE_CODE = 'FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_SOURCE_CODE'
 
 
 class Flow__Update_CBR_Custom_Zip_File(Type_Safe):
@@ -24,6 +32,18 @@ class Flow__Update_CBR_Custom_Zip_File(Type_Safe):
         return S3()
 
     @task()
+    def load_vars_from_env(self):
+        if not self.s3_key                  : self.s3_key                   = get_env(ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_KEY         , '')
+        if not self.s3_bucket               : self.s3_bucket                = get_env(ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__S3_BUCKET      , '')
+        if not self.lambda_name             : self.lambda_name              = get_env(ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__LAMBDA_NAME    , '')
+        if not self.zip_file__gh_source_code: self.zip_file__gh_source_code = get_env(ENV_VAR__FLOW__UPDATE_CBR_CUSTOM_ZIP_FILE__GH_SOURCE_CODE , '')
+
+        if not self.s3_key                  : raise ValueError("missing value for s3_key"                  )
+        if not self.s3_bucket               : raise ValueError("missing value for s3_bucket"               )
+        if not self.lambda_name             : raise ValueError("missing value for lambda_name"             )
+        if not self.zip_file__gh_source_code: raise ValueError("missing value for zip_file__gh_source_code")
+
+    @task()
     def check_s3_access(self):
         if self.s3().file_exists(self.s3_bucket, self.s3_key) is False:
             raise Exception("S3 error: file not found in S3: {self.s3_bucket}::{self.s3_key}")
@@ -32,7 +52,6 @@ class Flow__Update_CBR_Custom_Zip_File(Type_Safe):
     def download__zip_file__cbr_custom__from_s3(self, flow_data: dict):
         self.s3_file_bytes = self.s3().file_bytes(self.s3_bucket, self.s3_key)
         flow_data['cbr_custom__s3__zip_bytes'] = self.s3_file_bytes
-        #print(f'Downloaded file contents with size: {len(self.s3_file_bytes)}')
 
     @task()
     def download__zip_file__gh_source_code(self, flow_data: dict):
@@ -84,7 +103,8 @@ class Flow__Update_CBR_Custom_Zip_File(Type_Safe):
 
 
     @flow()
-    def create_flow(self):
+    def create_flow(self) -> Flow:
+        self.load_vars_from_env                     ()
         self.check_s3_access                        ()
         self.download__zip_file__cbr_custom__from_s3()
         self.download__zip_file__gh_source_code     ()
@@ -94,3 +114,8 @@ class Flow__Update_CBR_Custom_Zip_File(Type_Safe):
         self.trigger_lambda_refresh                 ()
         self.wait_for_lambda_update                 ()
         return 'all done'
+
+if __name__ == '__main__':
+    flow = Flow__Update_CBR_Custom_Zip_File().create_flow()
+    flow.execute()
+    flow.print_log_messages()

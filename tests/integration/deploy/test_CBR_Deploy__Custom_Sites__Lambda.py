@@ -19,7 +19,7 @@ class test_CBR_Deploy__Custom_Sites__Lambda(TestCase):
         image_version = 'v0.192.0'
         with self.cbr_deploy_lambda as _:
             result = _.create_lambda_function(function_name=function_name, image_version=image_version)
-            assert result is True 
+            assert result is True
 
     # def test__change_deploy_zip_file(self):
     #     s3_key = 'cbr-custom-websites/cbr_website_beta/dev__cbr_custom_portuguese.zip'
