@@ -1,6 +1,8 @@
 from typing                                                         import cast
 from unittest                                                       import TestCase
 from osbot_aws.AWS_Config                                           import aws_config
+from osbot_aws.apis.Lambda import Lambda
+
 from osbot_utils.utils.Env import set_env
 
 from osbot_utils.utils.Dev import pprint

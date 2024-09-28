@@ -1,9 +1,10 @@
+from osbot_aws.AWS_Config import aws_config
 from osbot_aws.apis.Lambda                          import Lambda
 from osbot_aws.aws.s3.S3                            import S3
 from osbot_utils.helpers.flows.Flow                 import Flow
 from osbot_utils.utils.Env                          import get_env
 from osbot_utils.helpers.Zip_Bytes                  import Zip_Bytes
-from osbot_utils.utils.Http                         import GET_bytes
+from osbot_utils.utils.Http import GET_bytes, GET
 from osbot_utils.utils.Misc                         import date_time_now
 from osbot_utils.utils.Zip                          import zip_bytes__files, zip_bytes__replace_files
 from osbot_utils.decorators.methods.cache_on_self   import cache_on_self
@@ -102,6 +103,22 @@ class Flow__Update_CBR_Custom_Zip_File(Type_Safe):
         with Lambda(self.lambda_name) as _:
             _.wait_for_function_update_to_complete()
 
+    @task()
+    def make_request_to_lambda_url(self):
+        with Lambda(name=self.lambda_name) as _:
+            # print(self.lambda_name)
+            # print(_.exists(self.lambda_name))
+            # function_arn = _.function_arn()
+            # print(function_arn)
+            lambda_url  = _.function_url()
+            if not lambda_url:
+                raise ValueError("no lambda_url found")
+
+            url_status = f'{lambda_url}config/status'
+            response   = GET(url_status)
+            print(f"Status page respone: {response}")
+            print("Function URL: ", lambda_url)
+
 
     @flow()
     def create_flow(self) -> Flow:
@@ -114,6 +131,7 @@ class Flow__Update_CBR_Custom_Zip_File(Type_Safe):
         self.upload_changed_zip_file                ()
         self.trigger_lambda_refresh                 ()
         self.wait_for_lambda_update                 ()
+        self.make_request_to_lambda_url               ()
         return 'all done'
 
 if __name__ == '__main__':
