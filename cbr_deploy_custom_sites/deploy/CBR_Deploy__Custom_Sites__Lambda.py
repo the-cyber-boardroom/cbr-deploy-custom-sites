@@ -1,4 +1,4 @@
-from osbot_aws.deploy.Deploy_Lambda import Deploy_Lambda
+from osbot_aws.deploy.Deploy_Lambda     import Deploy_Lambda
 from osbot_utils.base_classes.Type_Safe import Type_Safe
 
 IMAGE_URI__FORMAT = '654654216424.dkr.ecr.eu-west-1.amazonaws.com/cbr-website-beta_lambda:{version}'

@@ -1,6 +1,7 @@
 from unittest                                                        import TestCase
 from osbot_aws.AWS_Config                                            import aws_config
-from osbot_aws.apis.Lambda                                           import Lambda
+from osbot_aws.aws.lambda_.Lambda import Lambda
+
 from osbot_utils.utils.Misc                                          import date_time_now
 from cbr_deploy_custom_sites.deploy.CBR_Deploy__Custom_Sites__Lambda import CBR_Deploy__Custom_Sites__Lambda
 

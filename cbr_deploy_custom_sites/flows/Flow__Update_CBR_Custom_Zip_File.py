@@ -1,10 +1,11 @@
 from osbot_aws.AWS_Config import aws_config
-from osbot_aws.apis.Lambda                          import Lambda
+from osbot_aws.aws.lambda_.Lambda import Lambda
+
 from osbot_aws.aws.s3.S3                            import S3
 from osbot_utils.helpers.flows.Flow                 import Flow
 from osbot_utils.utils.Env                          import get_env
 from osbot_utils.helpers.Zip_Bytes                  import Zip_Bytes
-from osbot_utils.utils.Http import GET_bytes, GET
+from osbot_utils.utils.Http                         import GET_bytes, GET
 from osbot_utils.utils.Misc                         import date_time_now
 from osbot_utils.utils.Zip                          import zip_bytes__files, zip_bytes__replace_files
 from osbot_utils.decorators.methods.cache_on_self   import cache_on_self
